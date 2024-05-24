@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "CriarOcorrencia.proto";
+
+option java_multiple_files = true;
+option java_package = "br.com.cad.proto_content";
+
+package br.com.cad.proto_content;
+
+service GerarOcorrenciaService {
+    rpc gerarOcorrenciaBFF(GerarOcorrenciaRequestBFF_gRPC) returns (OcorrenciaResponse_gRCP) {}
+}
+
+message GerarOcorrenciaRequestBFF_gRPC {
+    string cpfUsuario = 1;
+    double latitude = 2;
+    double longitude = 3;
+}

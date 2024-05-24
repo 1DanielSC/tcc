@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets:
+        - prometheus:9090
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['cadvisor:8080']
+  # - job_name: netdata
+  #   metrics_path: /api/v1/allmetrics?format=prometheus_all_hosts&source=raw
+  #   relabel_configs:
+  #   - source_labels: [__address__]
+  #     regex: ^(.+)\.\w+:\d+
+  #     target_label: instance
+  #     action: replace
+  #   static_configs:
+  #   - targets: [netdata:19999]
+  #     labels:
+  #       env: production
+  #       group: applications
+  #       source: newproject

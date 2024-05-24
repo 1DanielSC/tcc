@@ -1,0 +1,90 @@
+version: '3.9'
+
+networks:
+  cadrn-network:
+    name: cadrn
+    external: true
+
+volumes:
+  prometheus_data: {}
+
+
+services:
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: always
+    networks:
+      - cadrn-network
+    ports:
+      - "8080:8080"
+    volumes: 
+      - "/:/rootfs"
+      - "/var/run:/var/run"
+      - "/sys:/sys"
+      - "/var/lib/docker/:/var/lib/docker"
+      - "/dev/disk/:/dev/disk"
+
+  # influxdb:
+  #   container_name: influxdb
+  #   image: influxdb:1.8
+  #   networks:
+  #     - cadrn-network
+  #   ports:
+  #     - "8086:8086"
+  #   environment:
+  #     # - INFLUXDB_DB=k6
+  #     - INFLUXDB_DB=jmeter
+  
+  
+  # netdata:
+  #   image: netdata/netdata
+  #   container_name: netdata
+  #   ports:
+  #     - 19999:19999
+  #   restart: unless-stopped
+  #   networks:
+  #     - cadrn-network
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   security_opt:
+  #     - apparmor:unconfined
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   environment:
+  #     - PGID=999
+    # grep docker /etc/group | cut -d ':' -f 3
+
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9095:9090"
+    networks:
+      - cadrn-network
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    networks:
+      - cadrn-network
+    ports:
+      - "3000:3000"
+    depends_on:
+      # - influxdb
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin

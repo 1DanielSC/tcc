@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "br.com.cad.proto_content";
+
+package br.com.cad.proto_content;
+
+service BairroGrpcService {
+    rpc listarBairros (BairroRequest) returns (BairroListResponse) {}
+    rpc listarBairrosStreaming (BairroRequest) returns (stream BairroResponse) {}
+}
+
+message BairroRequest {
+}
+
+message BairroListResponse {
+    repeated BairroResponse bairros = 1;
+}
+
+message BairroResponse {
+    int32 id = 1;
+    string nome = 2;
+    string origemEndereco = 3;
+    MunicipioResponse municipio = 4;
+}
+
+message MunicipioResponse {
+    int32 id = 1;
+    string nome = 2;
+    string origemEndereco = 3;
+}
