@@ -1,0 +1,79 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "br.com.cad.proto_content";
+package br.com.cad.proto_content;
+
+service CriarOcorrenciaService {
+    rpc criarOcorrencia(CriarOcorrenciaRequest_gRCP) 
+        returns (OcorrenciaResponse_gRCP) {}
+}
+
+message CriarOcorrenciaRequest_gRCP {
+    string nomeSolicitante = 1;
+    LigacaoDTO_gRPC ligacao = 2;
+    string referencia = 3;
+    int32 tipoOcorrencia = 4;
+    int32 subtipoOcorrencia = 5;
+    repeated int32 agencias = 6;
+    repeated int32 grupos = 7;
+    EnderecoDTO_gRPC endereco = 8;
+    repeated string detalhes = 9;
+}
+message LigacaoDTO_gRPC {
+    string telefoneSolicitante = 1;
+    string idLigacaoCentral = 2;
+    string horaLigacaoCentral = 3;
+}
+message EnderecoDTO_gRPC {
+    double latitude = 1;
+    double longitude = 2;
+    EnderecoOpcionalDTO_gRPC municipio = 3;
+    EnderecoOpcionalDTO_gRPC bairro = 4;
+    EnderecoOpcionalDTO_gRPC logradouro = 5;
+    EnderecoOpcionalDTO_gRPC localidade = 6;
+    EnderecoOpcionalDTO_gRPC numero = 7;
+}
+message EnderecoOpcionalDTO_gRPC {
+    enum EnumTipoEnderecoOpcional_gRPC {
+        ID = 0;
+        NOME = 1;
+        OSM = 2;
+    }
+    int32 id = 1;
+    string nome = 2;
+    EnumTipoEnderecoOpcional_gRPC tipoEndereco = 3;
+}
+message OcorrenciaResponse_gRCP {
+    int32 id = 1;
+    string protocolo = 2;
+    AgenciaDTO_gRPC agencia = 3;
+    string status = 4;
+    TipoOcorrenciaDTO_gRPC tipoOcorrencia = 5;
+    SubtipoOcorrenciaDTO_gRPC subtipoOcorrencia = 6;
+    string municipio = 7;
+    string bairro = 8;
+    string logradouro = 9;
+    string localidade = 10;
+    string numero = 11;
+    string referencia = 12;
+    double latitude = 13;
+    double longitude = 14;
+    string nomeSolicitante = 15;
+    string telefoneSolicitante = 16;
+}
+message AgenciaDTO_gRPC {
+    int32 id = 1;
+    string nome = 2;
+    string orgao = 3;
+    string abreviacao = 4;
+}
+message TipoOcorrenciaDTO_gRPC {
+    string codigo = 1;
+    string nome = 2;
+    string prioridade = 3;
+}
+message SubtipoOcorrenciaDTO_gRPC {
+    string codigo = 1;
+    string nome = 2;
+    int32 idTipoOcorrencia = 3;
+}
